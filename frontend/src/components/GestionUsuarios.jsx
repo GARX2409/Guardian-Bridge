@@ -3,20 +3,43 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import '../styles/gestionusuarios.css';
 
-
 const GestionUsuarios = () => {
     const [usuarios, setUsuarios] = useState([]);
-    const [nuevoUsuario, setNuevoUsuario] = useState({ username: '', password: '', role: '', sede: '' });
+    const [nuevoUsuario, setNuevoUsuario] = useState({
+        username: '',
+        password: '',
+        role: '',
+        sede: '',
+        grado: ''
+    });
+    const [usuariosOrganizados, setUsuariosOrganizados] = useState({});
+    const [usuarioEditando, setUsuarioEditando] = useState(null);
 
     useEffect(() => {
         fetchUsuarios();
     }, []);
 
     const fetchUsuarios = async () => {
-        const response = await axios.get('http://localhost:5000/api/users', {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        try {
+            const response = await axios.get('http://localhost:5000/api/users', {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            });
+            setUsuarios(response.data);
+            organizarUsuarios(response.data);
+        } catch (error) {
+            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar los usuarios' });
+        }
+    };
+
+    const organizarUsuarios = (usuarios) => {
+        const organizados = {};
+        usuarios.forEach((usuario) => {
+            const { sede, grado } = usuario;
+            if (!organizados[sede]) organizados[sede] = {};
+            if (!organizados[sede][grado]) organizados[sede][grado] = [];
+            organizados[sede][grado].push(usuario);
         });
-        setUsuarios(response.data);
+        setUsuariosOrganizados(organizados);
     };
 
     const handleInputChange = (e) => {
@@ -28,20 +51,30 @@ const GestionUsuarios = () => {
             await axios.post('http://localhost:5000/api/users', nuevoUsuario, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
-            Swal.fire({
-                icon: 'success',
-                title: 'Usuario agregado',
-                showConfirmButton: false,
-                timer: 1500,
-            });
+            Swal.fire({ icon: 'success', title: 'Usuario agregado', showConfirmButton: false, timer: 1500 });
             fetchUsuarios();
-            setNuevoUsuario({ username: '', password: '', role: '', sede: '' });
+            setNuevoUsuario({ username: '', password: '', role: '', sede: '', grado: '' });
         } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudo agregar el usuario',
+            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo agregar el usuario' });
+        }
+    };
+
+    const editarUsuario = (usuario) => {
+        setUsuarioEditando(usuario);
+        setNuevoUsuario(usuario);
+    };
+
+    const actualizarUsuario = async () => {
+        try {
+            await axios.put(`http://localhost:5000/api/users/${usuarioEditando._id}`, nuevoUsuario, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
+            Swal.fire({ icon: 'success', title: 'Usuario actualizado', showConfirmButton: false, timer: 1500 });
+            fetchUsuarios();
+            setUsuarioEditando(null);
+            setNuevoUsuario({ username: '', password: '', role: '', sede: '', grado: '' });
+        } catch (error) {
+            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo actualizar el usuario' });
         }
     };
 
@@ -61,19 +94,10 @@ const GestionUsuarios = () => {
                 await axios.delete(`http://localhost:5000/api/users/${id}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Usuario eliminado',
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
+                Swal.fire({ icon: 'success', title: 'Usuario eliminado', showConfirmButton: false, timer: 1500 });
                 fetchUsuarios();
             } catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'No se pudo eliminar el usuario',
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo eliminar el usuario' });
             }
         }
     };
@@ -82,20 +106,8 @@ const GestionUsuarios = () => {
         <div className="gestion-usuarios-container">
             <h2>Gestión de Usuarios</h2>
             <div className="formulario">
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Nombre de usuario"
-                    value={nuevoUsuario.username}
-                    onChange={handleInputChange}
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Contraseña"
-                    value={nuevoUsuario.password}
-                    onChange={handleInputChange}
-                />
+                <input type="text" name="username" placeholder="Nombre de usuario" value={nuevoUsuario.username} onChange={handleInputChange} />
+                <input type="password" name="password" placeholder="Contraseña" value={nuevoUsuario.password} onChange={handleInputChange} />
                 <select name="role" value={nuevoUsuario.role} onChange={handleInputChange}>
                     <option value="">Seleccione un rol</option>
                     <option value="estudiante">Estudiante</option>
@@ -103,37 +115,53 @@ const GestionUsuarios = () => {
                     <option value="mediador">Mediador</option>
                     <option value="developer">Developer</option>
                 </select>
-                <input
-                    type="text"
-                    name="sede"
-                    placeholder="Sede"
-                    value={nuevoUsuario.sede}
-                    onChange={handleInputChange}
-                />
-                <button onClick={agregarUsuario}>Agregar Usuario</button>
+                <select name="sede" value={nuevoUsuario.sede} onChange={handleInputChange}>
+                    <option value="">Seleccione una sede</option>
+                    <option value="popular">Popular</option>
+                    <option value="central">Central</option>
+                    <option value="vallejo">Vallejo</option>
+                    <option value="calvache">Calvache</option>
+                </select>
+                <input type="text" name="grado" placeholder="Grado (ej: 5-1, 6-2)" value={nuevoUsuario.grado} onChange={handleInputChange} />
+                {usuarioEditando ? (
+                    <button onClick={actualizarUsuario}>Actualizar Usuario</button>
+                ) : (
+                    <button onClick={agregarUsuario}>Agregar Usuario</button>
+                )}
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre de Usuario</th>
-                        <th>Rol</th>
-                        <th>Sede</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {usuarios.map((usuario) => (
-                        <tr key={usuario._id}>
-                            <td>{usuario.username}</td>
-                            <td>{usuario.role}</td>
-                            <td>{usuario.sede}</td>
-                            <td>
-                                <button onClick={() => eliminarUsuario(usuario._id)}>Eliminar</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <div className="usuarios-organizados">
+                {Object.keys(usuariosOrganizados).map((sede) => (
+                    <div key={sede} className="sede-container">
+                        <h3>Sede: {sede}</h3>
+                        {Object.keys(usuariosOrganizados[sede]).map((grado) => (
+                            <div key={grado} className="grado-container">
+                                <h4>Grado: {grado}</h4>
+                                <table className="tabla-usuarios">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre de Usuario</th>
+                                            <th>Rol</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {usuariosOrganizados[sede][grado].map((usuario) => (
+                                            <tr key={usuario._id}>
+                                                <td>{usuario.username}</td>
+                                                <td>{usuario.role}</td>
+                                                <td>
+                                                    <button onClick={() => editarUsuario(usuario)}>Editar</button>
+                                                    <button onClick={() => eliminarUsuario(usuario._id)} className="btn-eliminar">Eliminar</button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ))}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

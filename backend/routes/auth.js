@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { login, getUser, updatePassword } = require('../controllers/authController');
+const { login, getUser, updatePassword } = require('../controllers/authcontroller');
 const authMiddleware = require('../middlewares/authMiddleware');
 
 // Endpoint para iniciar sesión

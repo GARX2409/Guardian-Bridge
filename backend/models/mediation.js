@@ -6,9 +6,9 @@ const MediationSchema = new mongoose.Schema({
     descripcion: { type: String, required: true },
     tipoFalta: { type: String, required: true },
     sede: { type: String, required: true },
-    estado: { type: String, default: 'En Proceso' },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    createdAt: { type: Date, default: Date.now }
+    estado: { type: String, default: 'Proceso' }, // Estado por defecto
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Referencia al usuario
+    createdAt: { type: Date, default: Date.now } // Fecha de creación
 });
 
-module.exports = mongoose.model('Mediation', MediationSchema);
+module.exports = mongoose.model('Mediation', MediationSchema, 'mediations'); // El tercer parámetro es el nombre de la colección

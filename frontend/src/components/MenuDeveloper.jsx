@@ -7,8 +7,8 @@ const MenuDeveloper = () => {
         <div className="menu-container">
             <h1>Bienvenido Developer</h1>
             <div className="menu-buttons">
-                <Link to="/gestion-usuarios" className="btn btn-primary">Gestionar Usuarios</Link>
-                <Link to="/gestion-mediaciones" className="btn btn-success">Gestionar Mediaciones</Link>
+                <Link to="/gestionusuarios" className="btn btn-primary">Gestionar Usuarios</Link>
+                <Link to="/gestionmediaciones" className="btn btn-success">Gestionar Mediaciones</Link>
                 <Link to="/estadisticas" className="btn btn-warning">Ver Estadísticas</Link>
                 <Link to="/" className="btn btn-danger">Cerrar Sesión</Link>
             </div>

@@ -4,9 +4,9 @@ const User = require('../models/User');
 const getStats = async (req, res) => {
     try {
         // Obtener estadísticas de mediaciones
-        const mediacionesActivas = await Mediation.countDocuments({ estado: 'En Proceso' });
-        const mediacionesResueltas = await Mediation.countDocuments({ estado: 'Resuelto' });
-        const mediacionesCanceladas = await Mediation.countDocuments({ estado: 'Cancelada' });
+        const mediacionesProceso = await Mediation.countDocuments({ estado: 'Proceso' });
+        const mediacionesResueltas = await Mediation.countDocuments({ estado: 'resuelta' });
+        const mediacionesCanceladas = await Mediation.countDocuments({ estado: 'cancelada' });
 
         // Obtener estadísticas de usuarios
         const totalUsuarios = await User.countDocuments();
@@ -16,7 +16,7 @@ const getStats = async (req, res) => {
 
         // Enviar la respuesta con las estadísticas
         res.json({
-            mediacionesActivas,
+            mediacionesProceso,
             mediacionesResueltas,
             mediacionesCanceladas,
             totalUsuarios,

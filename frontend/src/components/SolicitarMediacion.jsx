@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import '../styles/SolicitarMediacion.css';
 
 const SolicitarMediacion = () => {
     const [mediacion, setMediacion] = useState({
         nombre: '',
         titulo: '',
         descripcion: '',
-        tipoFalta: '',
-        sede: localStorage.getItem('sede') || '',
-        estado: 'pendiente'
+        tipoFalta: 'Tipo 1', // Único tipo de falta
+        sede: '',
     });
     const navigate = useNavigate();
+    const userRole = localStorage.getItem('role');
 
     const handleInputChange = (e) => {
         setMediacion({ ...mediacion, [e.target.name]: e.target.value });
@@ -20,9 +21,44 @@ const SolicitarMediacion = () => {
 
     const solicitarMediacion = async () => {
         try {
-            await axios.post('http://localhost:5000/api/mediations', mediacion, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            });
+            // Verificar que todos los campos obligatorios estén llenos
+            if (!mediacion.nombre || !mediacion.titulo || !mediacion.descripcion || !mediacion.sede) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Todos los campos son obligatorios',
+                });
+                return;
+            }
+
+            // Obtener el ID del usuario autenticado
+            const userId = localStorage.getItem('userId');
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No estás autenticado. Por favor, inicia sesión.',
+                });
+                navigate('/login');
+                return;
+            }
+
+            // Enviar la solicitud al backend
+            // eslint-disable-next-line no-unused-vars
+            const response = await axios.post(
+                'http://localhost:5000/api/mediations',
+                {
+                    ...mediacion, // Incluir todos los campos de la mediación
+                    createdBy: userId, // Añadir el ID del usuario
+                },
+                {
+                    headers: { Authorization: `Bearer ${token}` }, // Enviar el token en los headers
+                }
+            );
+
+            // Mostrar mensaje de éxito
             Swal.fire({
                 icon: 'success',
                 title: 'Mediación solicitada',
@@ -30,13 +66,26 @@ const SolicitarMediacion = () => {
                 showConfirmButton: false,
                 timer: 1500,
             });
-            navigate('/mediaciones-activas');
+
+            // Redirigir a la página de mediaciones
+            navigate('/solicitarmediacion');
         } catch (error) {
+            console.error('Error al solicitar la mediación:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'No se pudo solicitar la mediación',
+                text: error.response?.data?.message || 'No se pudo solicitar la mediación. Verifica tu autenticación e intenta nuevamente.',
             });
+        }
+    };
+
+    const handleRegresar = () => {
+        if (userRole === 'estudiante') {
+            navigate('/estudiante');
+        } else if (userRole === 'docente') {
+            navigate('/docente');
+        } else if (userRole === 'mediador') {
+            navigate('/mediador');
         }
     };
 
@@ -74,6 +123,20 @@ const SolicitarMediacion = () => {
                     />
                 </div>
                 <div className="mb-4">
+                    <select
+                    name="sede" 
+                    value={mediacion.sede}
+                    onChange={handleInputChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                >
+                    <option value="">Seleccione la sede</option>
+                    <option value="Central">Central</option>
+                    <option value=" Jose_Maria_Calvache">Jose Maria Calvache</option>
+                    <option value="Luis_Fernando_Vallejo">Luis Fernando Vallejo</option>
+                    <option value="Popular_Modelo">Popular Modelo</option>
+                </select>
+                </div>
+                <div className="mb-4">
                     <select 
                         name="tipoFalta" 
                         value={mediacion.tipoFalta} 
@@ -82,8 +145,6 @@ const SolicitarMediacion = () => {
                     >
                         <option value="">Seleccione el tipo de falta</option>
                         <option value="Tipo 1">Tipo 1</option>
-                        <option value="Tipo 2">Tipo 2</option>
-                        <option value="Tipo 3">Tipo 3</option>
                     </select>
                 </div>
                 <div className="flex items-center justify-between">
@@ -93,16 +154,17 @@ const SolicitarMediacion = () => {
                     >
                         Solicitar Mediación
                     </button>
-                    <Link 
-                        to="" 
-                        className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    >
-                        Regresar al Menú
-                    </Link>
+                    <button
+                    onClick={handleRegresar}
+                    className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                    Regresar al Menú
+                </button>
                 </div>
             </div>
         </div>
     );
 };
+
 
 export default SolicitarMediacion;

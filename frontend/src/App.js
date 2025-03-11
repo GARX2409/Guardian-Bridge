@@ -11,26 +11,106 @@ import Estadisticas from './components/Estadisticas';
 import MediacionesActivas from './components/MediacionesActivas';
 import  SolicitarMediacion from './components/SolicitarMediacion';
 import  InformacionPersonal from './components/InformacionPersonal';
+import MediacionesEstudiante from './components/MediacionesEstudiante';
 import './styles/App.css';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<Login />} />
-                <Route path="/estudiante" element={<MenuEstudiante />} />
-                <Route path="/docente" element={<MenuDocente />} />
-                <Route path="/mediador" element={<MenuMediador />} />
-                <Route path="/developer" element={<MenuDeveloper />} />
-                <Route path="/gestion-usuarios" element={<GestionUsuarios />} />
-                <Route path="/gestion-mediaciones" element={<GestionMediaciones />} />
-                <Route path="/estadisticas" element={<Estadisticas />} />
-                <Route path="/mediacionesactivas" element={<MediacionesActivas />} />
-                <Route path="/solicitarmediacion" element={<SolicitarMediacion />} />
-                <Route path="/informacionpersonal" element={<InformacionPersonal />} />
+                <Route
+                    path="/estudiante"
+                    element={
+                        <ProtectedRoute>
+                            <MenuEstudiante />
+                        </ProtectedRoute>
+                    }
+                />
+                
+                <Route
+                    path="/docente"
+                    element={
+                        <ProtectedRoute>
+                            <MenuDocente />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/mediador"
+                    element={
+                        <ProtectedRoute>
+                            <MenuMediador />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/developer"
+                    element={
+                        <ProtectedRoute>
+                            <MenuDeveloper />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/mediacionesactivas"
+                    element={
+                        <ProtectedRoute>
+                            <MediacionesActivas />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/informacionpersonal"
+                    element={
+                        <ProtectedRoute>
+                            <InformacionPersonal />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/solicitarmediacion"
+                    element={
+                        <ProtectedRoute>
+                            <SolicitarMediacion />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/gestionusuarios"
+                    element={
+                        <ProtectedRoute>
+                            <GestionUsuarios />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/gestionmediaciones"
+                    element={
+                        <ProtectedRoute>
+                            <GestionMediaciones />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/estadisticas"
+                    element={
+                        <ProtectedRoute>
+                            <Estadisticas />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/mediacionesestudiante"
+                    element={
+                        <ProtectedRoute>
+                            <MediacionesEstudiante />
+                        </ProtectedRoute>
+                    }
+                />
             </Routes>
-        </Router>
+            </Router>
     );
 }
-
 export default App;

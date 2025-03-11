@@ -1,3 +1,4 @@
+// Rutas para el controlador de usuarios
 const express = require('express');
 const { getUsers, createUser, updateUser, deleteUser } = require('../controllers/userController');
 const authMiddleware = require('../middlewares/authMiddleware');
