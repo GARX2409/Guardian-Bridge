@@ -47,7 +47,7 @@ const GestionMediaciones = () => {
     const guardarCambios = async () => {
         try {
             await axios.put(
-                `https://guardian-bridge-backend.onrender.com/api/mediation/${mediacionEditada._id}`,
+                `https://guardian-bridge-backend.onrender.com/api/mediations/${mediacionEditada._id}`,
                 mediacionEditada,
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );
@@ -82,7 +82,7 @@ const GestionMediaciones = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`https://guardian-bridge-backend.onrender.com/api/mediation/${id}`, {
+                await axios.delete(`https://guardian-bridge-backend.onrender.com/api/mediations/${id}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 fetchMediaciones(); // Actualizar la lista de mediaciones
