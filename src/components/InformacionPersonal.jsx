@@ -34,7 +34,7 @@ const InformacionPersonal = () => {
     const actualizarContrasena = async () => {
         try {
             await axios.put(
-                'https://guardian-bridge-backend.onrender.com/api/auth/user/password',
+                'https://guardian-bridge-backend.onrender.com/api/auth/update-password',
                 { password: nuevaContrasena },
                 {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
