@@ -22,7 +22,7 @@ const GestionUsuarios = () => {
 
   const fetchUsuarios = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/users", {
+      const response = await axios.get("https://guardian-bridge-backend.onrender.com/api/users", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setUsuarios(response.data);
@@ -53,7 +53,7 @@ const GestionUsuarios = () => {
 
   const agregarUsuario = async () => {
     try {
-      await axios.post("http://localhost:5000/api/users", nuevoUsuario, {
+      await axios.post("https://guardian-bridge-backend.onrender.com/api/users", nuevoUsuario, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       Swal.fire({
@@ -87,7 +87,7 @@ const GestionUsuarios = () => {
   const actualizarUsuario = async () => {
     try {
       await axios.put(
-        `http://localhost:5000/api/users/${usuarioEditando._id}`,
+        `https://guardian-bridge-backend.onrender.com/api/users/${usuarioEditando._id}`,
         nuevoUsuario,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -130,7 +130,7 @@ const GestionUsuarios = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:5000/api/users/${id}`, {
+        await axios.delete(`https://guardian-bridge-backend.onrender.com/api/user/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         Swal.fire({

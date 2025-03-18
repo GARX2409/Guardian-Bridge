@@ -48,7 +48,7 @@ const SolicitarMediacion = () => {
             // Enviar la solicitud al backend
             // eslint-disable-next-line no-unused-vars
             const response = await axios.post(
-                'http://localhost:5000/api/mediations',
+                'https://guardian-bridge-backend.onrender.com/api/mediations',
                 {
                     ...mediacion, // Incluir todos los campos de la mediación
                     createdBy: userId, // Añadir el ID del usuario

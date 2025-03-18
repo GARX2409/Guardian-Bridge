@@ -26,7 +26,7 @@ const Estadisticas = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/stats", {
+        const response = await axios.get("https://guardian-bridge-backend.onrender.com/api/stats", {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         setStats(response.data);

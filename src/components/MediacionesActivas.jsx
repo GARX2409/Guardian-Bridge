@@ -17,7 +17,7 @@ const MediacionesActivas = () => {
     // Obtener todas las mediaciones
     const fetchMediaciones = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/mediations', {
+            const response = await axios.get('http://guardian-bridge-backend.onrender.com/api/mediations', {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
 
@@ -55,7 +55,7 @@ const MediacionesActivas = () => {
     const actualizarEstado = async (id, nuevoEstado) => {
         try {
             await axios.put(
-                `http://localhost:5000/api/mediations/${id}`,
+                `https://guardian-bridge-backend.onrender.com/api/mediations/${id}`,
                 { estado: nuevoEstado },
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );

@@ -14,7 +14,7 @@ const InformacionPersonal = () => {
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/auth/user', {
+                const response = await axios.get('https://guardian-bridge-backend.onrender.com/api/auth/user', {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 setUsuario(response.data);
@@ -34,7 +34,7 @@ const InformacionPersonal = () => {
     const actualizarContrasena = async () => {
         try {
             await axios.put(
-                'http://localhost:5000/api/auth/update-password',
+                'https://guardian-bridge-backend.onrender.com/api/auth/user/password',
                 { password: nuevaContrasena },
                 {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
