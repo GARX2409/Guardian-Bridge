@@ -9,9 +9,10 @@ import GestionUsuarios from './components/GestionUsuarios';
 import GestionMediaciones from './components/GestionMediaciones';
 import Estadisticas from './components/Estadisticas';
 import MediacionesActivas from './components/MediacionesActivas';
-import  SolicitarMediacion from './components/SolicitarMediacion';
-import  InformacionPersonal from './components/InformacionPersonal';
+import SolicitarMediacion from './components/SolicitarMediacion';
+import InformacionPersonal from './components/InformacionPersonal';
 import MediacionesEstudiante from './components/MediacionesEstudiante';
+import HomePage from './components/HomePage'; // Importa la nueva página principal
 import './styles/App.css';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -19,7 +20,13 @@ function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Login />} />
+                {/* Ruta principal (HomePage) */}
+                <Route path="/" element={<HomePage />} />
+
+                {/* Ruta de login */}
+                <Route path="/login" element={<Login />} />
+
+                {/* Rutas protegidas */}
                 <Route
                     path="/estudiante"
                     element={
@@ -28,7 +35,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                
                 <Route
                     path="/docente"
                     element={
@@ -110,7 +116,8 @@ function App() {
                     }
                 />
             </Routes>
-            </Router>
+        </Router>
     );
 }
+
 export default App;
