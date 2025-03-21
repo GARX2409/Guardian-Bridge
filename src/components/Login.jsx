@@ -44,7 +44,10 @@ const Login = () => {
             console.error('Error en la solicitud:', error.response?.data || error.message);
         }
     };
-
+    // Función para redirigir al login
+    const handleRegresar = () => {
+        navigate('/')};
+    
     return (
         <div className="container" style={{ maxWidth: '400px', marginTop: '50px' }}>
             <h2 className="text-center mb-4">Iniciar Sesión</h2>
@@ -74,6 +77,7 @@ const Login = () => {
                     />
                 </div>
                 <button type="submit" className="btn btn-primary w-100">Iniciar Sesión</button>
+                <button onClick={handleRegresar}className="btn btn-secondary w-100">Regresar</button>
             </form>
         </div>
     );
