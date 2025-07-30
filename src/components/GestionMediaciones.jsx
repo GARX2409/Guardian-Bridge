@@ -3,8 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-import EditarModal from "./EditarModal"; // Importar el nuevo componente
+import EditarModal from "./EditarModal";
 import "../styles/gestion.css";
 
 const GestionMediaciones = () => {
@@ -20,11 +19,12 @@ const GestionMediaciones = () => {
 
   const fetchMediaciones = async () => {
     try {
-      const response = await axios.get(" https://guardian-bridge-backend.onrender.com/api/mediations", {
+      const response = await axios.get("https://guardian-bridge-backend.onrender.com/api/mediations", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setMediaciones(response.data);
     } catch (error) {
+      console.error("Error al cargar mediaciones:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -147,7 +147,7 @@ const GestionMediaciones = () => {
                   <td className="px-4 py-2">
                     <div className="flex items-center">
                       <div
-                        className="estado-circulo"
+                        className="w-3 h-3 rounded-full mr-2"
                         style={{
                           backgroundColor: getEstadoColor(mediacion.estado),
                         }}
@@ -158,13 +158,13 @@ const GestionMediaciones = () => {
                   <td className="px-4 py-2">
                     <button
                       onClick={() => abrirModalEditar(mediacion)}
-                      className="btn-editar"
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mr-2"
                     >
                       Editar
                     </button>
                     <button
                       onClick={() => eliminarMediacion(mediacion._id)}
-                      className="btn-eliminar"
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
                     >
                       Eliminar
                     </button>
@@ -190,7 +190,6 @@ const GestionMediaciones = () => {
         </button>
       </div>
 
-      {/* Modal para editar mediación */}
       <EditarModal
         showModal={showModal}
         cerrarModal={cerrarModal}
@@ -259,15 +258,16 @@ const GestionMediaciones = () => {
             onChange={(e) =>
               setMediacionEditada({
                 ...mediacionEditada,
-                sede  : e.target.value,
+                sede: e.target.value,
               })
             }
             className="w-full px-3 py-2 border rounded"
-          ><option value="">Seleccione una sede</option>
+          >
+            <option value="">Seleccione una sede</option>
             <option value="Popular">Popular modelo</option>
             <option value="central">Central/principal</option>
             <option value="vallejo">Luis Fernando Vallejo</option>
-            <option value="calvache">jose Maria Calvache</option>
+            <option value="calvache">José María Calvache</option>
           </select>
         </div>
         <div className="mb-4">
