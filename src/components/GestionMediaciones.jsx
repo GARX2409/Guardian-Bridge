@@ -20,7 +20,7 @@ const GestionMediaciones = () => {
 
   const fetchMediaciones = async () => {
     try {
-      const response = await axios.get("/api/mediations", {
+      const response = await axios.get(" https://guardian-bridge-backend.onrender.com/api/mediations", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setMediaciones(response.data);
