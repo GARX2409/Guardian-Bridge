@@ -1,0 +1,25 @@
+/* Estilos para el círculo de estado */
+.estado-circulo {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+/* Colores para los estados */
+.estado-circulo.cancelada {
+    background-color: red;
+}
+
+.estado-circulo.proceso {
+    background-color: orange;
+}
+
+.estado-circulo.resuelta {
+    background-color: green;
+}
+
+.estado-circulo.default {
+    background-color: gray;
+}

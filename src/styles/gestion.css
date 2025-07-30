@@ -1,0 +1,257 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+h2, h3, h4 {
+    text-align: center;
+    color: #333;
+}
+
+/* Contenedor principal */
+.gestion-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Formularios */
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.formulario input, .formulario select, .formulario button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.formulario button {
+    background: #007bff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+}
+
+.formulario button:hover {
+    background: #0056b3;
+}
+
+/* Tablas */
+.tabla-usuarios, .tabla-mediaciones {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.tabla-usuarios th, .tabla-usuarios td, .tabla-mediaciones th, .tabla-mediaciones td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.tabla-usuarios th, .tabla-mediaciones th {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Botones de acciones */
+.btn-editar, .btn-eliminar {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-left: 10px;
+    min-width: 80px; /* Tamaño estándar para los botones */
+}
+
+.btn-editar {
+    background: #ffc107;
+    color: #333;
+}
+
+.btn-editar:hover {
+    background: #e0a800;
+}
+
+.btn-eliminar {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-eliminar:hover {
+    background: #c82333;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px; /* Ancho máximo para el modal */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Permitir scroll si el contenido es muy largo */
+    max-height: 90vh; /* Altura máxima para el modal */
+}
+
+.modal-content input, .modal-content select, .modal-content textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.btn-cancelar {
+    background: #6c757d;
+    color: white;
+    padding: 10px 20px; /* Tamaño estándar para los botones */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    min-width: 100px; /* Tamaño estándar para los botones */
+}
+
+.btn-cancelar:hover {
+    background: #5a6268;
+}
+
+.btn-actualizar {
+    background: #28a745;
+    color: white;
+    padding: 10px 20px; /* Tamaño estándar para los botones */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    min-width: 100px; /* Tamaño estándar para los botones */
+}
+
+.btn-actualizar:hover {
+    background: #218838;
+}
+
+/* Estilos para el círculo de estado */
+.estado-circulo {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.estado-circulo.cancelada {
+    background-color: red;
+}
+
+.estado-circulo.proceso {
+    background-color: orange;
+}
+
+.estado-circulo.resuelta {
+    background-color: green;
+}
+
+.estado-circulo.default {
+    background-color: gray;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .formulario {
+        padding: 10px;
+    }
+
+    .formulario input, .formulario select, .formulario button {
+        font-size: 14px;
+    }
+
+    .tabla-usuarios, .tabla-mediaciones {
+        font-size: 14px;
+    }
+
+    .tabla-usuarios th, .tabla-usuarios td, .tabla-mediaciones th, .tabla-mediaciones td {
+        padding: 6px;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .modal-content input, .modal-content select, .modal-content textarea {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gestion-container {
+        padding: 10px;
+    }
+
+    .formulario {
+        gap: 5px;
+    }
+
+    .formulario input, .formulario select, .formulario button {
+        padding: 8px;
+    }
+
+    .tabla-usuarios, .tabla-mediaciones {
+        font-size: 12px;
+    }
+
+    .tabla-usuarios th, .tabla-usuarios td, .tabla-mediaciones th, .tabla-mediaciones td {
+        padding: 4px;
+    }
+
+    .modal-content {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .modal-content input, .modal-content select, .modal-content textarea {
+        padding: 8px;
+    }
+}

@@ -1,0 +1,149 @@
+/* Estilos generales */
+.informacion-personal-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.informacion-personal-container h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.informacion-personal-container p {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+/* Estilos del formulario */
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #333;
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Estilos de los botones */
+.btn-actualizar, .btn-editar, .btn-regresar, .btn-cancelar, .btn-guardar {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-actualizar {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.btn-actualizar:hover {
+    background-color: #218838;
+}
+
+.btn-editar {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.btn-editar:hover {
+    background-color: #e0a800;
+}
+
+.btn-regresar {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.btn-regresar:hover {
+    background-color: #5a6268;
+}
+
+.btn-cancelar {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-cancelar:hover {
+    background-color: #c82333;
+}
+
+.btn-guardar {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-guardar:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos del modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.modal h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.modal .form-group {
+    margin-bottom: 15px;
+}
+
+.modal .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555;
+}
+
+.modal .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}

@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import "../styles/gestionusuarios.css";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import EditarModal from "./EditarModal";
+import socket from "../socket";
+import "../styles/gestion.css";
 
 const GestionUsuarios = () => {
-  const [usuarios, setUsuarios] = useState([]);
+  const [, setUsuarios] = useState([]);
   const [nuevoUsuario, setNuevoUsuario] = useState({
     username: "",
     password: "",
@@ -15,12 +18,10 @@ const GestionUsuarios = () => {
   });
   const [usuariosOrganizados, setUsuariosOrganizados] = useState({});
   const [usuarioEditando, setUsuarioEditando] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState(new Set());
 
-  useEffect(() => {
-    fetchUsuarios();
-  }, []);
-
-  const fetchUsuarios = async () => {
+  const fetchUsuarios = useCallback(async () => {
     try {
       const response = await axios.get("https://guardian-bridge-backend.onrender.com/api/users", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -34,6 +35,25 @@ const GestionUsuarios = () => {
         text: "No se pudieron cargar los usuarios",
       });
     }
+  }, []);
+
+  useEffect(() => {
+    fetchUsuarios();
+    setupSocketListeners();
+
+    return () => {
+      socket.off('userStatusChanged');
+    };
+  }, [fetchUsuarios]);
+
+  const setupSocketListeners = () => {
+    socket.on('userStatusChanged', ({ userId, isOnline }) => {
+      setOnlineUsers(prev => {
+        const newSet = new Set(prev);
+        isOnline ? newSet.add(userId) : newSet.delete(userId);
+        return newSet;
+      });
+    });
   };
 
   const organizarUsuarios = (usuarios) => {
@@ -53,7 +73,7 @@ const GestionUsuarios = () => {
 
   const agregarUsuario = async () => {
     try {
-      await axios.post("https://guardian-bridge-backend.onrender.com/api/users", nuevoUsuario, {
+      await axios.post(" https://guardian-bridge-backend.onrender.com/api/users", nuevoUsuario, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       Swal.fire({
@@ -81,14 +101,14 @@ const GestionUsuarios = () => {
 
   const editarUsuario = (usuario) => {
     setUsuarioEditando(usuario);
-    setNuevoUsuario(usuario);
+    setShowModal(true);
   };
 
   const actualizarUsuario = async () => {
     try {
       await axios.put(
         `https://guardian-bridge-backend.onrender.com/api/users/${usuarioEditando._id}`,
-        nuevoUsuario,
+        usuarioEditando,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -100,14 +120,8 @@ const GestionUsuarios = () => {
         timer: 1500,
       });
       fetchUsuarios();
+      setShowModal(false);
       setUsuarioEditando(null);
-      setNuevoUsuario({
-        username: "",
-        password: "",
-        role: "",
-        sede: "",
-        grado: "",
-      });
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -130,7 +144,7 @@ const GestionUsuarios = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`https://guardian-bridge-backend.onrender.com/api/user/${id}`, {
+        await axios.delete(`https://guardian-bridge-backend.onrender.com/api/users/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         Swal.fire({
@@ -149,7 +163,7 @@ const GestionUsuarios = () => {
       }
     }
   };
-  const userRole = localStorage.getItem("role");
+
   const navigate = useNavigate();
 
   const handleRegresar = () => {
@@ -203,11 +217,7 @@ const GestionUsuarios = () => {
           value={nuevoUsuario.grado}
           onChange={handleInputChange}
         />
-        {usuarioEditando ? (
-          <button onClick={actualizarUsuario}>Actualizar Usuario</button>
-        ) : (
-          <button onClick={agregarUsuario}>Agregar Usuario</button>
-        )}
+        <button onClick={agregarUsuario}>Agregar Usuario</button>
         <button
           onClick={handleRegresar}
           className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -227,6 +237,7 @@ const GestionUsuarios = () => {
                     <tr>
                       <th>Nombre de Usuario</th>
                       <th>Rol</th>
+                      <th>Estado</th>
                       <th>Acciones</th>
                     </tr>
                   </thead>
@@ -236,7 +247,15 @@ const GestionUsuarios = () => {
                         <td>{usuario.username}</td>
                         <td>{usuario.role}</td>
                         <td>
-                          <button onClick={() => editarUsuario(usuario)}>
+                          <span className={`status-indicator ${onlineUsers.has(usuario._id) ? 'online' : 'offline'}`}>
+                            {onlineUsers.has(usuario._id) ? '● En línea' : '● Desconectado'}
+                          </span>
+                        </td>
+                        <td>
+                          <button
+                            onClick={() => editarUsuario(usuario)}
+                            className="btn-editar"
+                          >
                             Editar
                           </button>
                           <button
@@ -255,6 +274,82 @@ const GestionUsuarios = () => {
           </div>
         ))}
       </div>
+
+      <EditarModal
+        showModal={showModal}
+        cerrarModal={() => setShowModal(false)}
+        guardarCambios={actualizarUsuario}
+        titulo="Editar Usuario"
+      >
+        <div className="mb-4">
+          <label className="block text-gray-700">Nombre de usuario</label>
+          <input
+            type="text"
+            name="username"
+            value={usuarioEditando?.username || ""}
+            onChange={(e) =>
+              setUsuarioEditando({ ...usuarioEditando, username: e.target.value })
+            }
+            className="w-full px-3 py-2 border rounded"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Contraseña</label>
+          <input
+            type="password"
+            name="password"
+            value={usuarioEditando?.password || ""}
+            onChange={(e) =>
+              setUsuarioEditando({ ...usuarioEditando, password: e.target.value })
+            }
+            className="w-full px-3 py-2 border rounded"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Rol</label>
+          <select
+            name="role"
+            value={usuarioEditando?.role || ""}
+            onChange={(e) =>
+              setUsuarioEditando({ ...usuarioEditando, role: e.target.value })
+            }
+            className="w-full px-3 py-2 border rounded"
+          >
+            <option value="estudiante">Estudiante</option>
+            <option value="docente">Docente</option>
+            <option value="mediador">Mediador</option>
+            <option value="developer">Administrador</option>
+          </select>
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Sede</label>
+          <select
+            name="sede"
+            value={usuarioEditando?.sede || ""}
+            onChange={(e) =>
+              setUsuarioEditando({ ...usuarioEditando, sede: e.target.value })
+            }
+            className="w-full px-3 py-2 border rounded"
+          >
+            <option value="popular">Popular</option>
+            <option value="central">Central</option>
+            <option value="vallejo">Vallejo</option>
+            <option value="calvache">Calvache</option>
+          </select>
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Grado</label>
+          <input
+            type="text"
+            name="grado"
+            value={usuarioEditando?.grado || ""}
+            onChange={(e) =>
+              setUsuarioEditando({ ...usuarioEditando, grado: e.target.value })
+            }
+            className="w-full px-3 py-2 border rounded"
+          />
+        </div>
+      </EditarModal>
     </div>
   );
 };

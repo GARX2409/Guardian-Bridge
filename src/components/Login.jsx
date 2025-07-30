@@ -5,82 +5,93 @@ import Swal from 'sweetalert2';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            const res = await axios.post('https://guardian-bridge-backend.onrender.com/api/auth/login', {
-                username,
-                password,
-            });
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await axios.post('https://guardian-bridge-backend.onrender.com/api/auth/login', {
+        username,
+        password,
+      });
 
-            // Verifica que los datos estén presentes en la respuesta
-            if (res.data.token && res.data.role && res.data.userId) {
-                localStorage.setItem('token', res.data.token);
-                localStorage.setItem('role', res.data.role);
-                localStorage.setItem('userId', res.data.userId);
+      if (res.data.token && res.data.role && res.data.userId) {
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('role', res.data.role);
+        localStorage.setItem('userId', res.data.userId);
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Inicio de sesión exitoso',
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
+        Swal.fire({
+          icon: 'success',
+          title: 'Inicio de sesión exitoso',
+          showConfirmButton: false,
+          timer: 1500,
+        });
 
-                // Redirección según el rol
-                navigate(`/${res.data.role}`);
-            } else {
-                throw new Error('Datos incompletos en la respuesta del servidor');
-            }
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Nombre de usuario o contraseña incorrectos',
-            });
-            console.error('Error en la solicitud:', error.response?.data || error.message);
-        }
-    };
-    // Función para redirigir al login
-    const handleRegresar = () => {
-        navigate('/')};
-    
-    return (
-        <div className="container" style={{ maxWidth: '400px', marginTop: '50px' }}>
-            <h2 className="text-center mb-4">Iniciar Sesión</h2>
-            <form id="loginForm" onSubmit={handleLogin}>
-                <div className="mb-3">
-                    <label htmlFor="username" className="form-label">Nombre de Usuario</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="username"
-                        placeholder="Ingrese su nombre de usuario"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="password" className="form-label">Contraseña</label>
-                    <input
-                        type="password"
-                        className="form-control"
-                        id="password"
-                        placeholder="Ingrese su contraseña"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary w-100">Iniciar Sesión</button>
-                <button onClick={handleRegresar}className="btn btn-secondary w-100">Regresar</button>
-            </form>
+        navigate(`/${res.data.role}`);
+      } else {
+        throw new Error('Datos incompletos en la respuesta del servidor');
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Nombre de usuario o contraseña incorrectos',
+      });
+      console.error('Error en la solicitud:', error.response?.data || error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegresar = () => {
+    navigate('/'); // Redirige al HomePage
+  };
+
+  return (
+    <div className="container" style={{ maxWidth: '400px', marginTop: '50px' }}>
+      <h2 className="text-center mb-4">Iniciar Sesión</h2>
+      <form id="loginForm" onSubmit={handleLogin}>
+        <div className="mb-3">
+          <label htmlFor="username" className="form-label">Nombre de Usuario</label>
+          <input
+            type="text"
+            className="form-control"
+            id="username"
+            placeholder="Ingrese su nombre de usuario"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
         </div>
-    );
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">Contraseña</label>
+          <input
+            type="password"
+            className="form-control"
+            id="password"
+            placeholder="Ingrese su contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" className="btn btn-primary w-100 mb-2" disabled={loading}>
+          {loading ? 'Cargando...' : 'Iniciar Sesión'}
+        </button>
+        <button
+          type="button"
+          className="btn btn-secondary w-100"
+          onClick={handleRegresar}
+        >
+          Regresar
+        </button>
+      </form>
+    </div>
+  );
 };
 
 export default Login;
